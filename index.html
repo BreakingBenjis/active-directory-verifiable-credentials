@@ -1,10 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Grant Verified ID</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    #qrCode {
+      margin-top: 2rem;
+      display: none;
+    }
+    #deepLink {
+      margin-top: 1rem;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to the Verified ID Issuer</h1>
-  <p>This is a placeholder page. Your app is deployed successfully!</p>
+  <p>Click the button below to request your Verified ID credential.</p>
+  <button onclick="requestCredential()">Request Verified ID</button>
+
+  <div id="qrCode">
+    <h3>Scan this QR code with Microsoft Authenticator:</h3>
+    <img id="qrImage" src="" alt="QR Code" width="300">
+  </div>
+
+  <div id="deepLink">
+    <h3>Or click this link on your mobile device:</h3>
+    <a id="link" href="#" target="_blank">Open in Authenticator</a>
+  </div>
+
+  <script>
+    async function requestCredential() {
+      try {
+        const response = await fetch('/api/issuer/issuance-request');
+        const data = await response.json();
+
+        document.getElementById('qrImage').src = data.qrCodeUrl;
+        document.getElementById('link').href = data.url;
+
+        document.getElementById('qrCode').style.display = 'block';
+        document.getElementById('deepLink').style.display = 'block';
+      } catch (error) {
+        alert('Failed to request credential. Please try again later.');
+        console.error(error);
+      }
+    }
+  </script>
 </body>
 </html>
